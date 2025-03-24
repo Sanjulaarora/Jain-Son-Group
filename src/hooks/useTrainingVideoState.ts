@@ -71,8 +71,8 @@ export const useTrainingVideoState = (videoId: string, shouldShowQuiz: boolean) 
         setUserProgress(progress);
         setWatchedPercentage(progress.watched_percentage || 0);
         
-        // Check if quiz should be unlocked (50% threshold)
-        if (progress.watched_percentage >= 50) {
+        // Check if quiz should be unlocked (80% threshold)
+        if (progress.watched_percentage >= 80) {
           console.log("Quiz unlocked based on existing progress");
           setQuizUnlocked(true);
         }
@@ -123,7 +123,7 @@ export const useTrainingVideoState = (videoId: string, shouldShowQuiz: boolean) 
       // Show quiz if the URL has the quiz parameter
       if (shouldShowQuiz) {
         // Check if quiz is unlocked
-        if ((progress && progress.watched_percentage >= 50) || progress?.quiz_completed) {
+        if ((progress && progress.watched_percentage >= 80) || progress?.quiz_completed) {
           console.log("Setting showQuiz to true based on URL param and progress");
           setShowQuiz(true);
           setQuizUnlocked(true);
@@ -131,12 +131,12 @@ export const useTrainingVideoState = (videoId: string, shouldShowQuiz: boolean) 
           // Redirect back if trying to access quiz directly when not unlocked
           toast({
             title: "Quiz Locked",
-            description: "You need to watch at least 50% of the video to unlock the quiz.",
+            description: "You need to watch at least 80% of the video to unlock the quiz.",
             variant: "destructive",
           });
           navigate(`/training/video/${videoId}`);
         }
-      } else if ((progress && progress.watched_percentage >= 50 && 
+      } else if ((progress && progress.watched_percentage >= 80 && 
           !progress.quiz_completed && quiz && quiz.length > 0) || 
           (progress?.quiz_completed)) {
         console.log("Setting quizUnlocked to true based on progress");
@@ -217,9 +217,9 @@ export const useTrainingVideoState = (videoId: string, shouldShowQuiz: boolean) 
         if (!error && data) {
           setUserProgress(data);
           
-          // Check if quiz should be unlocked (at 50% progress)
-          if (percentage >= 50 && !quizUnlocked) {
-            console.log("Unlocking quiz at 50% progress");
+          // Check if quiz should be unlocked (at 80% progress)
+          if (percentage >= 80 && !quizUnlocked) {
+            console.log("Unlocking quiz at 80% progress");
             setQuizUnlocked(true);
             
             // Show a toast notification

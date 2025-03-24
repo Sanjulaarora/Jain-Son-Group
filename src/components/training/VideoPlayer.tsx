@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 interface VideoPlayerProps {
   videoUrl: string;
-  onTimeUpdate: (currentTime: number, duration: number) => void;
+  onTimeUpdate: (watchedPercentage: number, duration: number) => void;
   onVideoEnded: () => void;
   lastPosition?: number;
   onPlay?: () => void;
@@ -22,20 +22,64 @@ export function VideoPlayer({
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const watchedSegments = useRef<boolean[]>([]);
+  const lastWatchedPosition = useRef(0);
+
+  // useEffect(() => {
+  //   // Set initial position if available
+  //   if (videoRef.current && lastPosition) {
+  //     videoRef.current.currentTime = lastPosition;
+  //   }
+  // }, [lastPosition]);
 
   useEffect(() => {
-    // Set initial position if available
-    if (videoRef.current && lastPosition) {
-      videoRef.current.currentTime = lastPosition;
+    if (videoRef.current) {
+      const video = videoRef.current;
+      video.addEventListener("loadedmetadata", () => {
+        if (lastPosition) {
+          video.currentTime = lastPosition;
+        }
+      });
     }
-  }, [lastPosition]);
+  }, [lastPosition]);  
+
+  // const handleTimeUpdate = () => {
+  //   if (videoRef.current) {
+  //     const currentTime = videoRef.current.currentTime;
+  //     const duration = videoRef.current.duration;
+  //     if (duration) {
+  //       onTimeUpdate(currentTime, duration);
+  //     }
+  //   }
+  // };
 
   const handleTimeUpdate = () => {
     if (videoRef.current) {
-      const currentTime = videoRef.current.currentTime;
-      const duration = videoRef.current.duration;
+      const video = videoRef.current;
+      const currentTime = Math.floor(video.currentTime);
+      const duration = Math.floor(video.duration);
+
       if (duration) {
-        onTimeUpdate(currentTime, duration);
+        watchedSegments.current[currentTime] = true;
+        lastWatchedPosition.current = currentTime;
+
+        // Calculate actual watched percentage
+        const watchedCount = watchedSegments.current.filter(Boolean).length;
+        const watchedPercentage = (watchedCount / duration) * 100;
+
+        onTimeUpdate(watchedPercentage, duration);
+      }
+    }
+  };
+
+  const handleSeeking = () => {
+    if (videoRef.current) {
+      const video = videoRef.current;
+      const currentTime = Math.floor(video.currentTime);
+
+      // Prevent skipping forward
+      if (currentTime > lastWatchedPosition.current) {
+        video.currentTime = lastWatchedPosition.current;
       }
     }
   };
@@ -72,6 +116,7 @@ export function VideoPlayer({
             onPause?.();
           }}
           onEnded={onVideoEnded}
+          onSeeking={handleSeeking}
           autoPlay={false}
         />
       ) : (

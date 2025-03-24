@@ -24,7 +24,7 @@ export function VideoCard({ video }: VideoCardProps) {
     if (!isQuizUnlocked && !isQuizCompleted) {
       toast({
         title: "Quiz Locked",
-        description: "You need to watch at least 50% of the video to unlock the quiz.",
+        description: "You need to watch at least 80% of the video to unlock the quiz.",
         variant: "destructive",
       });
       return;
@@ -110,7 +110,7 @@ export function VideoCard({ video }: VideoCardProps) {
               ) : !isQuizUnlocked ? (
                 <>
                   <AlertCircle className="h-4 w-4 mr-2" />
-                  Watch 50% to Unlock Quiz
+                  Watch 80% to Unlock Quiz
                 </>
               ) : (
                 <>

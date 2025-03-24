@@ -34,7 +34,7 @@ export function VideoDescription({
               <span>
                 {quizUnlocked 
                   ? "You've watched enough to take the quiz" 
-                  : "Watch 50% of the video to unlock the quiz"}
+                  : "Watch 80% of the video to unlock the quiz"}
               </span>
             ) : (
               <span>Watch the entire video to complete this training</span>

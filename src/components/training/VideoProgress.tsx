@@ -29,7 +29,7 @@ export function VideoProgress({
       {hasQuiz && !quizUnlocked && (
         <p className="text-xs text-muted-foreground">
           <AlertCircle className="h-3 w-3 inline-block mr-1" />
-          You need to watch at least 50% of the video to unlock the quiz
+          You need to watch at least 80% of the video to unlock the quiz
         </p>
       )}
     </div>
